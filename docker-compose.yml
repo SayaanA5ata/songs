@@ -4,11 +4,14 @@ services:
     container_name: postgres_go
     image: postgres:16.4
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: songs
+      - DATABASE_PORT=${DB_PORT}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+      - SERVER_PORT=${SERVER_PORT}
     volumes:
       - ./postgres-data:/data/postgres
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
       

@@ -2,6 +2,7 @@ package main
 
 import (
 	"dinushc/gorutines/internal/song"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -14,9 +15,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	db, err := gorm.Open(postgres.Open(os.Getenv("DSN")), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(GetDSN()), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 	db.AutoMigrate(&song.SongModel{})
+}
+
+func GetDSN() string {
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	db_name := os.Getenv("DB_NAME")
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, db_name)
 }

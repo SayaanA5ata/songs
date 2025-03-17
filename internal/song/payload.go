@@ -9,10 +9,6 @@ type SongCreateRequest struct {
 	Hash  string `json:"hash" gorm:"unigueIndex"`
 }
 
-type SongCreateResponse struct {
-	Token string `json:"token"`
-}
-
 type SongUpdateRequest struct {
 	Group string `json:"group"`
 	Name  string `json:"song"`

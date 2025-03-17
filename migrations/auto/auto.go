@@ -19,7 +19,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&song.SongModel{})
+	err = db.AutoMigrate(&song.SongModel{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func GetDSN() string {

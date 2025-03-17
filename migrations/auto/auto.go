@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dinushc/gorutines/internal/song"
+	"dinushc/gorutines/internal/domain"
 	"fmt"
 	"os"
 
@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = db.AutoMigrate(&song.SongModel{})
+	err = db.AutoMigrate(&domain.SongModel{})
 	if err != nil {
 		panic(err)
 	}

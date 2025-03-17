@@ -1,6 +1,7 @@
-package song
+package implementation
 
 import (
+	"dinushc/gorutines/internal/domain"
 	"dinushc/gorutines/pkg/db"
 
 	"gorm.io/gorm/clause"
@@ -16,7 +17,7 @@ func NewSongRepository(database *db.Db) *SongRepository {
 	}
 }
 
-func (repo *SongRepository) Create(song *SongModel) (*SongModel, error) {
+func (repo *SongRepository) Create(song *domain.SongModel) (*domain.SongModel, error) {
 	result := repo.Database.DB.Create(song)
 	if result.Error != nil {
 		return nil, result.Error
@@ -24,8 +25,8 @@ func (repo *SongRepository) Create(song *SongModel) (*SongModel, error) {
 	return song, nil
 }
 
-func (repo *SongRepository) GetByHash(hash string) (*SongModel, error) {
-	var song SongModel
+func (repo *SongRepository) GetByHash(hash string) (*domain.SongModel, error) {
+	var song domain.SongModel
 	result := repo.Database.DB.First(&song, "hash=?", hash)
 	if result.Error != nil {
 		return nil, result.Error
@@ -33,7 +34,7 @@ func (repo *SongRepository) GetByHash(hash string) (*SongModel, error) {
 	return &song, nil
 }
 
-func (repo *SongRepository) Update(song *SongModel) (*SongModel, error) {
+func (repo *SongRepository) Update(song *domain.SongModel) (*domain.SongModel, error) {
 	result := repo.Database.DB.Clauses(clause.Returning{}).Updates(song)
 	if result.Error != nil {
 		return nil, result.Error
@@ -41,8 +42,8 @@ func (repo *SongRepository) Update(song *SongModel) (*SongModel, error) {
 	return song, nil
 }
 
-func (repo *SongRepository) GetById(id uint) (*SongModel, error) {
-	var song SongModel
+func (repo *SongRepository) GetById(id uint) (*domain.SongModel, error) {
+	var song domain.SongModel
 	result := repo.Database.DB.First(&song, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -51,7 +52,7 @@ func (repo *SongRepository) GetById(id uint) (*SongModel, error) {
 }
 
 func (repo *SongRepository) Delete(id uint) error {
-	result := repo.Database.DB.Delete(&SongModel{}, id)
+	result := repo.Database.DB.Delete(&domain.SongModel{}, id)
 	if result.Error != nil {
 		return result.Error
 	}

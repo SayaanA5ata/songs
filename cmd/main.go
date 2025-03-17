@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"dinushc/gorutines/configs"
-	"dinushc/gorutines/internal/song"
+	"dinushc/gorutines/internal/handlers"
+	"dinushc/gorutines/internal/implementation"
+	"dinushc/gorutines/internal/service"
 	"dinushc/gorutines/pkg/db"
 	"dinushc/gorutines/pkg/middleware"
 	"log"
@@ -41,11 +43,12 @@ func main() {
 	router.Use(middleware.Logging)
 
 	// Repositories
-	songRepository := song.NewSongRepository(dbase)
+	songRepository := implementation.NewSongRepository(dbase)
+	songservice := service.NewSongService(songRepository)
 
 	// Handlers
-	song.NewSongHandler(router, song.SongHandlerDeps{
-		SongRepo: songRepository,
+	handlers.NewSongHandler(router, handlers.SongHandlerDeps{
+		Service: songservice,
 	})
 
 	// Определение порта

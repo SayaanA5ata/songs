@@ -1,4 +1,4 @@
-package song
+package payload
 
 type SongCreateRequest struct {
 	Group string `json:"group" validate:"required"`
@@ -6,7 +6,7 @@ type SongCreateRequest struct {
 	Date  string `json:"releaseDate" validate:"required"`
 	Text  string `json:"text" validate:"required"`
 	Link  string `json:"link" validate:"required,http_url"`
-	Hash  string `json:"hash" gorm:"unigueIndex"`
+	Hash  string `json:"hash" gorm:"uniqueIndex"`
 }
 
 type SongUpdateRequest struct {

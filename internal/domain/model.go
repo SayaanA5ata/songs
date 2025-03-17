@@ -1,4 +1,4 @@
-package song
+package domain
 
 import (
 	"crypto/rand"
@@ -14,16 +14,16 @@ type SongModel struct {
 	Date  string `json:"releaseDate"`
 	Text  string `json:"text"`
 	Link  string `json:"link"`
-	Hash  string `json:"hash" gorm:"unigueIndex"`
+	Hash  string `json:"hash" gorm:"uniqueIndex"`
 }
 
-func NewSong(createRequest *SongCreateRequest) *SongModel {
+func NewSong(group, name, date, text, link string) *SongModel {
 	song := &SongModel{
-		Group: createRequest.Group,
-		Name:  createRequest.Name,
-		Date:  createRequest.Date,
-		Text:  createRequest.Text,
-		Link:  createRequest.Link,
+		Group: group,
+		Name:  name,
+		Date:  date,
+		Text:  text,
+		Link:  link,
 		Hash:  GenerateStringHash(6),
 	}
 	song.GenerateHash()
@@ -43,6 +43,7 @@ func GenerateStringHash(length int) string {
 	for i := 0; i < length; i++ {
 		randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(len(charsetRunes))))
 		if err != nil {
+			// Обработка ошибки генерации хеша
 		}
 		result[i] = charsetRunes[randomIndex.Int64()]
 	}

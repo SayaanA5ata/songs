@@ -22,11 +22,6 @@ func NewSongHandler(router *chi.Mux, deps SongHandlerDeps) {
 	handler := &SongHandler{
 		SongRepo: deps.SongRepo,
 	}
-	/*
-		router.HandleFunc("POST /song", handler.Create())
-		router.HandleFunc("PATCH /song/{id}", handler.Update())
-		router.HandleFunc("DELETE /song/{id}", handler.Delete())
-		router.HandleFunc("GET /{alias}", handler.GoTo())*/
 	// Роуты с использованием Chi
 	router.Post("/song", handler.Create())        // Создание песни
 	router.Patch("/song/{id}", handler.Update())  // Обновление песни

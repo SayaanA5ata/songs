@@ -17,3 +17,18 @@ type SongUpdateRequest struct {
 	Link  string `json:"link"`
 	Hash  string `json:"hash"`
 }
+
+type SongResponse struct {
+	ID    uint   `json:"id"`
+	Group string `json:"group"`
+	Name  string `json:"song"`
+	Date  string `json:"releaseDate"`
+	Text  string `json:"text"`
+	Link  string `json:"link"`
+	Hash  string `json:"hash"`
+}
+
+type VerseResponse struct {
+	VerseNumber int    `json:"verseNumber"`
+	Text        string `json:"text"`
+}

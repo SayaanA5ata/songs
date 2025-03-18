@@ -47,9 +47,7 @@ func main() {
 	songservice := service.NewSongService(songRepository)
 
 	// Handlers
-	handlers.NewSongHandler(router, handlers.SongHandlerDeps{
-		Service: songservice,
-	})
+	handlers.NewSongHandler(router, songservice)
 
 	// Определение порта
 	port := ":" + os.Getenv("SERVER_PORT")

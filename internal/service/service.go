@@ -18,6 +18,49 @@ func NewSongService(repo interfaces.SongRepositoryInterface) *SongService {
 	}
 }
 
+// Получение данных библиотеки с фильтрацией и пагинацией
+func (service *SongService) GetSongs(filter map[string]interface{}, page, pageSize int) ([]payload.SongResponse, int64, error) {
+	songs, total, err := service.Repo.GetSongs(filter, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Преобразуем доменные модели в DTO
+	var response []payload.SongResponse
+	for _, song := range songs {
+		response = append(response, payload.SongResponse{
+			ID:    song.ID,
+			Group: song.Group,
+			Name:  song.Name,
+			Date:  song.Date,
+			Text:  song.Text,
+			Link:  song.Link,
+			Hash:  song.Hash,
+		})
+	}
+
+	return response, total, nil
+}
+
+// Получение текста песни с пагинацией по куплетам
+func (service *SongService) GetSongVerses(songID uint, page, pageSize int) ([]payload.VerseResponse, int, error) {
+	verses, totalVerses, err := service.Repo.GetSongVerses(songID, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Преобразуем куплеты в DTO
+	var response []payload.VerseResponse
+	for i, verse := range verses {
+		response = append(response, payload.VerseResponse{
+			VerseNumber: i + 1,
+			Text:        verse,
+		})
+	}
+
+	return response, totalVerses, nil
+}
+
 func (service *SongService) CreateSong(createRequest *payload.SongCreateRequest) (*domain.SongModel, error) {
 	song := domain.NewSong(createRequest.Group, createRequest.Name, createRequest.Date, createRequest.Text, createRequest.Link)
 	for {

@@ -34,7 +34,17 @@ func NewSongHandler(router *chi.Mux, service *service.SongService) {
 	router.Get("/{alias}", handler.GoTo())
 }
 
-// Получение данных библиотеки с фильтрацией и пагинацией
+// @Summary Получение данных библиотеки с фильтрацией и пагинацией
+// @Tags songs
+// @Param group query string false "Фильтр по названию группы"
+// @Param name query string false "Фильтр по названию песни"
+// @Param date query string false "Фильтр по дате выпуска"
+// @Param page query int false "Номер страницы"
+// @Param pageSize query int false "Размер страницы"
+// @Success 200 {object} map[string]interface{} "Успешный ответ с данными песен"
+// @Failure 400 {object} map[string]string "Ошибка валидации параметров"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /songs [get]
 func (handler *SongHandler) GetSongs() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling GET /songs request...")
@@ -79,7 +89,16 @@ func (handler *SongHandler) GetSongs() http.HandlerFunc {
 	}
 }
 
-// Получение текста песни с пагинацией по куплетам
+// @Summary Получение текста песни с пагинацией по куплетам
+// @Tags songs
+// @Param id path int true "ID песни"
+// @Param page query int false "Номер страницы"
+// @Param pageSize query int false "Размер страницы"
+// @Success 200 {object} map[string]interface{} "Успешный ответ с куплетами песни"
+// @Failure 400 {object} map[string]string "Ошибка валидации параметров"
+// @Failure 404 {object} map[string]string "Песня не найдена"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /songs/{id}/verses [get]
 func (handler *SongHandler) GetSongVerses() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling GET /songs/{id}/verses request...")
@@ -125,6 +144,15 @@ func (handler *SongHandler) GetSongVerses() http.HandlerFunc {
 	}
 }
 
+// @Summary Добавление новой песни
+// @Tags songs
+// @Accept json
+// @Produce json
+// @Param song body payload.SongCreateRequest true "Данные для создания песни"
+// @Success 201 {object} domain.SongModel "Успешное создание песни"
+// @Failure 400 {object} map[string]string "Ошибка валидации данных"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /song [post]
 func (handler *SongHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling POST /song request...")
@@ -149,6 +177,17 @@ func (handler *SongHandler) Create() http.HandlerFunc {
 	}
 }
 
+// @Summary Обновление данных песни
+// @Tags songs
+// @Accept json
+// @Produce json
+// @Param id path int true "ID песни"
+// @Param song body payload.SongUpdateRequest true "Данные для обновления песни"
+// @Success 200 {object} domain.SongModel "Успешное обновление песни"
+// @Failure 400 {object} map[string]string "Ошибка валидации данных"
+// @Failure 404 {object} map[string]string "Песня не найдена"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /song/{id} [patch]
 func (handler *SongHandler) Update() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling PATCH /song/{id} request...")
@@ -182,6 +221,13 @@ func (handler *SongHandler) Update() http.HandlerFunc {
 	}
 }
 
+// @Summary Удаление песни
+// @Tags songs
+// @Param id path int true "ID песни"
+// @Success 200 {object} map[string]string "Песня успешно удалена"
+// @Failure 404 {object} map[string]string "Песня не найдена"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /song/{id} [delete]
 func (handler *SongHandler) Delete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling DELETE /song/{id} request...")
@@ -208,6 +254,13 @@ func (handler *SongHandler) Delete() http.HandlerFunc {
 	}
 }
 
+// @Summary Переход по ссылке песни
+// @Tags songs
+// @Param alias path string true "Хеш песни"
+// @Success 302 {string} string "Редирект на ссылку песни"
+// @Failure 404 {object} map[string]string "Песня не найдена"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /{alias} [get]
 func (handler *SongHandler) GoTo() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling GET /{alias} request...")

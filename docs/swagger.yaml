@@ -1,0 +1,294 @@
+basePath: /
+definitions:
+  domain.SongModel:
+    properties:
+      createdAt:
+        example: "2023-10-01T12:00:00Z"
+        type: string
+      deletedAt:
+        example: ""
+        type: string
+      group:
+        type: string
+      hash:
+        type: string
+      id:
+        example: 1
+        type: integer
+      link:
+        type: string
+      releaseDate:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+      updatedAt:
+        example: "2023-10-01T12:00:00Z"
+        type: string
+    type: object
+  payload.SongCreateRequest:
+    properties:
+      group:
+        type: string
+      hash:
+        type: string
+      link:
+        type: string
+      releaseDate:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    required:
+    - group
+    - link
+    - releaseDate
+    - song
+    - text
+    type: object
+  payload.SongUpdateRequest:
+    properties:
+      group:
+        type: string
+      hash:
+        type: string
+      link:
+        type: string
+      releaseDate:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: It's a simple API for songs.
+  title: Test API
+  version: "1.0"
+paths:
+  /{alias}:
+    get:
+      parameters:
+      - description: Хеш песни
+        in: path
+        name: alias
+        required: true
+        type: string
+      responses:
+        "302":
+          description: Редирект на ссылку песни
+          schema:
+            type: string
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Переход по ссылке песни
+      tags:
+      - songs
+  /song:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные для создания песни
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/payload.SongCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Успешное создание песни
+          schema:
+            $ref: '#/definitions/domain.SongModel'
+        "400":
+          description: Ошибка валидации данных
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Добавление новой песни
+      tags:
+      - songs
+  /song/{id}:
+    delete:
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Песня успешно удалена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Удаление песни
+      tags:
+      - songs
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Данные для обновления песни
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/payload.SongUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление песни
+          schema:
+            $ref: '#/definitions/domain.SongModel'
+        "400":
+          description: Ошибка валидации данных
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновление данных песни
+      tags:
+      - songs
+  /songs:
+    get:
+      parameters:
+      - description: Фильтр по названию группы
+        in: query
+        name: group
+        type: string
+      - description: Фильтр по названию песни
+        in: query
+        name: name
+        type: string
+      - description: Фильтр по дате выпуска
+        in: query
+        name: date
+        type: string
+      - description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - description: Размер страницы
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: Успешный ответ с данными песен
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации параметров
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получение данных библиотеки с фильтрацией и пагинацией
+      tags:
+      - songs
+  /songs/{id}/verses:
+    get:
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - description: Размер страницы
+        in: query
+        name: pageSize
+        type: integer
+      responses:
+        "200":
+          description: Успешный ответ с куплетами песни
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации параметров
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получение текста песни с пагинацией по куплетам
+      tags:
+      - songs
+swagger: "2.0"

@@ -4,6 +4,7 @@ import (
 	"dinushc/gorutines/internal/domain"
 	"dinushc/gorutines/internal/interfaces"
 	"dinushc/gorutines/internal/payload"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -13,6 +14,7 @@ type SongService struct {
 }
 
 func NewSongService(repo interfaces.SongRepositoryInterface) *SongService {
+	log.Println("Initializing SongService...")
 	return &SongService{
 		Repo: repo,
 	}
@@ -20,10 +22,14 @@ func NewSongService(repo interfaces.SongRepositoryInterface) *SongService {
 
 // Получение данных библиотеки с фильтрацией и пагинацией
 func (service *SongService) GetSongs(filter map[string]interface{}, page, pageSize int) ([]payload.SongResponse, int64, error) {
+	log.Printf("Fetching songs with filter: %+v, page: %d, pageSize: %d", filter, page, pageSize)
+
 	songs, total, err := service.Repo.GetSongs(filter, page, pageSize)
 	if err != nil {
+		log.Printf("Error fetching songs from repository: %v", err)
 		return nil, 0, err
 	}
+	log.Printf("Successfully fetched %d songs from the repository", len(songs))
 
 	// Преобразуем доменные модели в DTO
 	var response []payload.SongResponse
@@ -38,16 +44,21 @@ func (service *SongService) GetSongs(filter map[string]interface{}, page, pageSi
 			Hash:  song.Hash,
 		})
 	}
+	log.Printf("Converted %d songs to DTO format", len(response))
 
 	return response, total, nil
 }
 
 // Получение текста песни с пагинацией по куплетам
 func (service *SongService) GetSongVerses(songID uint, page, pageSize int) ([]payload.VerseResponse, int, error) {
+	log.Printf("Fetching verses for song ID: %d, page: %d, pageSize: %d", songID, page, pageSize)
+
 	verses, totalVerses, err := service.Repo.GetSongVerses(songID, page, pageSize)
 	if err != nil {
+		log.Printf("Error fetching verses from repository: %v", err)
 		return nil, 0, err
 	}
+	log.Printf("Successfully fetched %d verses from the repository", len(verses))
 
 	// Преобразуем куплеты в DTO
 	var response []payload.VerseResponse
@@ -57,23 +68,40 @@ func (service *SongService) GetSongVerses(songID uint, page, pageSize int) ([]pa
 			Text:        verse,
 		})
 	}
+	log.Printf("Converted %d verses to DTO format", len(response))
 
 	return response, totalVerses, nil
 }
 
 func (service *SongService) CreateSong(createRequest *payload.SongCreateRequest) (*domain.SongModel, error) {
+	log.Printf("Creating a new song with group=%s, name=%s", createRequest.Group, createRequest.Name)
+
 	song := domain.NewSong(createRequest.Group, createRequest.Name, createRequest.Date, createRequest.Text, createRequest.Link)
+	log.Printf("Generated initial hash for the song: %s", song.Hash)
+
 	for {
 		existedSong, _ := service.Repo.GetByHash(song.Hash)
 		if existedSong == nil {
 			break
 		}
+		log.Printf("Hash collision detected. Generating a new hash...")
 		song.GenerateHash()
 	}
-	return service.Repo.Create(song)
+	log.Printf("Final hash generated for the song: %s", song.Hash)
+
+	createdSong, err := service.Repo.Create(song)
+	if err != nil {
+		log.Printf("Error creating song in repository: %v", err)
+		return nil, err
+	}
+	log.Printf("Song created successfully with ID: %d", createdSong.ID)
+
+	return createdSong, nil
 }
 
 func (service *SongService) UpdateSong(id uint, updateRequest *payload.SongUpdateRequest) (*domain.SongModel, error) {
+	log.Printf("Updating song with ID: %d", id)
+
 	song := &domain.SongModel{
 		Model: gorm.Model{ID: id},
 		Group: updateRequest.Group,
@@ -83,13 +111,39 @@ func (service *SongService) UpdateSong(id uint, updateRequest *payload.SongUpdat
 		Link:  updateRequest.Link,
 		Hash:  updateRequest.Hash,
 	}
-	return service.Repo.Update(song)
+
+	updatedSong, err := service.Repo.Update(song)
+	if err != nil {
+		log.Printf("Error updating song in repository: %v", err)
+		return nil, err
+	}
+	log.Printf("Song updated successfully with ID: %d", updatedSong.ID)
+
+	return updatedSong, nil
 }
 
 func (service *SongService) DeleteSong(id uint) error {
-	return service.Repo.Delete(id)
+	log.Printf("Deleting song with ID: %d", id)
+
+	err := service.Repo.Delete(id)
+	if err != nil {
+		log.Printf("Error deleting song from repository: %v", err)
+		return err
+	}
+	log.Printf("Song deleted successfully with ID: %d", id)
+
+	return nil
 }
 
 func (service *SongService) GetSongByHash(hash string) (*domain.SongModel, error) {
-	return service.Repo.GetByHash(hash)
+	log.Printf("Fetching song by hash: %s", hash)
+
+	song, err := service.Repo.GetByHash(hash)
+	if err != nil {
+		log.Printf("Error fetching song by hash from repository: %v", err)
+		return nil, err
+	}
+	log.Printf("Song fetched successfully by hash: %s", hash)
+
+	return song, nil
 }

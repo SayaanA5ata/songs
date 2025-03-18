@@ -2,8 +2,9 @@ package main
 
 import (
 	"dinushc/gorutines/internal/domain"
-	"fmt"
-	"os"
+	"dinushc/gorutines/pkg/dsn"
+
+	"log"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -11,26 +12,27 @@ import (
 )
 
 func main() {
+	// Загрузка .env файла
+	log.Println("Loading .env file...")
 	err := godotenv.Load(".env")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error loading .env file: %v", err)
 	}
-	db, err := gorm.Open(postgres.Open(GetDSN()), &gorm.Config{})
+	log.Println("Successfully loaded .env file.")
+
+	// Подключение к базе данных
+	log.Println("Connecting to the database...")
+	db, err := gorm.Open(postgres.Open(dsn.GetPureDSN()), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error connecting to the database: %v", err)
 	}
+	log.Println("Successfully connected to the database.")
+
+	// Выполнение миграций
+	log.Println("Running database migrations...")
 	err = db.AutoMigrate(&domain.SongModel{})
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error running database migrations: %v", err)
 	}
-}
-
-func GetDSN() string {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	db_name := os.Getenv("DB_NAME")
-	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, db_name)
+	log.Println("Database migrations completed successfully.")
 }

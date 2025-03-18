@@ -19,8 +19,6 @@ type SongModel struct {
 }
 
 func NewSong(group, name, date, text, link string) *SongModel {
-	log.Printf("Creating a new song with group=%s, name=%s, date=%s", group, name, date)
-
 	song := &SongModel{
 		Group: group,
 		Name:  name,
@@ -29,18 +27,13 @@ func NewSong(group, name, date, text, link string) *SongModel {
 		Link:  link,
 		Hash:  GenerateStringHash(6),
 	}
-	log.Printf("Initial hash generated for the song: %s", song.Hash)
-
-	song.GenerateHash()
-	log.Printf("Final hash generated for the song: %s", song.Hash)
+	log.Printf("Hash generated for the song: %s", song.Hash)
 
 	return song
 }
 
 func (song *SongModel) GenerateHash() {
-	log.Println("Generating a new hash for the song...")
 	song.Hash = GenerateStringHash(6)
-	log.Printf("New hash generated: %s", song.Hash)
 }
 
 func GenerateStringHash(length int) string {

@@ -25,7 +25,6 @@ func NewSongHandler(router *chi.Mux, service *service.SongService) {
 		Service: service,
 	}
 
-	log.Println("Registering song handlers...")
 	router.Get("/songs", handler.GetSongs())
 	router.Get("/songs/{id}/verses", handler.GetSongVerses())
 	router.Post("/song", handler.Create())
@@ -76,7 +75,6 @@ func (handler *SongHandler) GetSongs() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		log.Printf("Successfully fetched %d songs from service", len(songs))
 
 		res.Json(w, map[string]interface{}{
 			"data":       songs,
@@ -131,7 +129,6 @@ func (handler *SongHandler) GetSongVerses() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		log.Printf("Successfully fetched %d verses from service", len(verses))
 
 		res.Json(w, map[string]interface{}{
 			"data":       verses,
@@ -170,7 +167,6 @@ func (handler *SongHandler) Create() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		log.Printf("Song created successfully with ID: %d", song.ID)
 
 		res.Json(w, song, 201)
 		log.Println("Response sent with created song")
@@ -214,7 +210,6 @@ func (handler *SongHandler) Update() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		log.Printf("Song updated successfully with ID: %d", song.ID)
 
 		res.Json(w, song, 201)
 		log.Println("Response sent with updated song")
@@ -247,10 +242,7 @@ func (handler *SongHandler) Delete() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		log.Printf("Song deleted successfully with ID: %d", id)
-
 		res.Json(w, nil, 200)
-		log.Println("Response sent for successful deletion")
 	}
 }
 
@@ -270,7 +262,6 @@ func (handler *SongHandler) GoTo() http.HandlerFunc {
 
 		song, err := handler.Service.GetSongByHash(alias)
 		if err != nil {
-			log.Printf("Error fetching song by hash: %v", err)
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}

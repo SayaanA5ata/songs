@@ -14,7 +14,6 @@ type SongService struct {
 }
 
 func NewSongService(repo interfaces.SongRepositoryInterface) *SongService {
-	log.Println("Initializing SongService...")
 	return &SongService{
 		Repo: repo,
 	}
@@ -74,10 +73,7 @@ func (service *SongService) GetSongVerses(songID uint, page, pageSize int) ([]pa
 }
 
 func (service *SongService) CreateSong(createRequest *payload.SongCreateRequest) (*domain.SongModel, error) {
-	log.Printf("Creating a new song with group=%s, name=%s", createRequest.Group, createRequest.Name)
-
 	song := domain.NewSong(createRequest.Group, createRequest.Name, createRequest.Date, createRequest.Text, createRequest.Link)
-	log.Printf("Generated initial hash for the song: %s", song.Hash)
 
 	for {
 		existedSong, _ := service.Repo.GetByHash(song.Hash)

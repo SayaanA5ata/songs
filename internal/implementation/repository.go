@@ -29,15 +29,6 @@ func (repo *SongRepository) Create(song *domain.SongModel) (*domain.SongModel, e
 	return song, nil
 }
 
-func (repo *SongRepository) GetByHash(hash string) (*domain.SongModel, error) {
-	var song domain.SongModel
-	result := repo.Database.DB.First(&song, "hash=?", hash)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &song, nil
-}
-
 func (repo *SongRepository) Update(song *domain.SongModel) (*domain.SongModel, error) {
 	result := repo.Database.DB.Clauses(clause.Returning{}).Updates(song)
 	if result.Error != nil {

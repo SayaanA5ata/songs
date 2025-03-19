@@ -309,7 +309,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{alias}": {
+        "/{id}": {
             "get": {
                 "tags": [
                     "songs"
@@ -317,9 +317,9 @@ const docTemplate = `{
                 "summary": "Переход по ссылке песни",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Хеш песни",
-                        "name": "alias",
+                        "type": "integer",
+                        "description": "ID песни",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -368,9 +368,6 @@ const docTemplate = `{
                 "group": {
                     "type": "string"
                 },
-                "hash": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer",
                     "example": 1
@@ -406,9 +403,6 @@ const docTemplate = `{
                 "group": {
                     "type": "string"
                 },
-                "hash": {
-                    "type": "string"
-                },
                 "link": {
                     "type": "string"
                 },
@@ -427,9 +421,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "group": {
-                    "type": "string"
-                },
-                "hash": {
                     "type": "string"
                 },
                 "link": {

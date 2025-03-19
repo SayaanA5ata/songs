@@ -10,8 +10,6 @@ definitions:
         type: string
       group:
         type: string
-      hash:
-        type: string
       id:
         example: 1
         type: integer
@@ -30,8 +28,6 @@ definitions:
   payload.SongCreateRequest:
     properties:
       group:
-        type: string
-      hash:
         type: string
       link:
         type: string
@@ -52,8 +48,6 @@ definitions:
     properties:
       group:
         type: string
-      hash:
-        type: string
       link:
         type: string
       releaseDate:
@@ -70,14 +64,14 @@ info:
   title: Test API
   version: "1.0"
 paths:
-  /{alias}:
+  /{id}:
     get:
       parameters:
-      - description: Хеш песни
+      - description: ID песни
         in: path
-        name: alias
+        name: id
         required: true
-        type: string
+        type: integer
       responses:
         "302":
           description: Редирект на ссылку песни

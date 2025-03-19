@@ -47,7 +47,6 @@ func seedTestData(db *gorm.DB) {
 			Date:  "16.07.2006",
 			Text:  "Ooh baby, don't you know I suffer?\nOoh baby, can you hear me moan?",
 			Link:  "https://www.youtube.com/watch?v=Xsp3_a-PMTw",
-			Hash:  "abc123",
 		},
 		{
 			Group: "Coldplay",
@@ -55,7 +54,6 @@ func seedTestData(db *gorm.DB) {
 			Date:  "26.06.2000",
 			Text:  "Look at the stars,\nLook how they shine for you,\nAnd everything you do,\nYeah, they were all yellow.",
 			Link:  "https://www.youtube.com/watch?v=yKNxeF4KMsY",
-			Hash:  "def456",
 		},
 		{
 			Group: "Radiohead",
@@ -63,7 +61,6 @@ func seedTestData(db *gorm.DB) {
 			Date:  "21.09.1992",
 			Text:  "When you were here before,\nCouldn't look you in the eye,\nYou're just like an angel,\nYour skin makes me cry.",
 			Link:  "https://www.youtube.com/watch?v=XFkzRNyygfk",
-			Hash:  "ghi789",
 		},
 	}
 

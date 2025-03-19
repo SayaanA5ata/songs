@@ -303,7 +303,7 @@
                 }
             }
         },
-        "/{alias}": {
+        "/{id}": {
             "get": {
                 "tags": [
                     "songs"
@@ -311,9 +311,9 @@
                 "summary": "Переход по ссылке песни",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Хеш песни",
-                        "name": "alias",
+                        "type": "integer",
+                        "description": "ID песни",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -362,9 +362,6 @@
                 "group": {
                     "type": "string"
                 },
-                "hash": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer",
                     "example": 1
@@ -400,9 +397,6 @@
                 "group": {
                     "type": "string"
                 },
-                "hash": {
-                    "type": "string"
-                },
                 "link": {
                     "type": "string"
                 },
@@ -421,9 +415,6 @@
             "type": "object",
             "properties": {
                 "group": {
-                    "type": "string"
-                },
-                "hash": {
                     "type": "string"
                 },
                 "link": {

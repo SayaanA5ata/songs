@@ -40,7 +40,6 @@ func (service *SongService) GetSongs(filter map[string]interface{}, page, pageSi
 			Date:  song.Date,
 			Text:  song.Text,
 			Link:  song.Link,
-			Hash:  song.Hash,
 		})
 	}
 	log.Printf("Converted %d songs to DTO format", len(response))
@@ -75,16 +74,6 @@ func (service *SongService) GetSongVerses(songID uint, page, pageSize int) ([]pa
 func (service *SongService) CreateSong(createRequest *payload.SongCreateRequest) (*domain.SongModel, error) {
 	song := domain.NewSong(createRequest.Group, createRequest.Name, createRequest.Date, createRequest.Text, createRequest.Link)
 
-	for {
-		existedSong, _ := service.Repo.GetByHash(song.Hash)
-		if existedSong == nil {
-			break
-		}
-		log.Printf("Hash collision detected. Generating a new hash...")
-		song.GenerateHash()
-	}
-	log.Printf("Final hash generated for the song: %s", song.Hash)
-
 	createdSong, err := service.Repo.Create(song)
 	if err != nil {
 		log.Printf("Error creating song in repository: %v", err)
@@ -105,7 +94,6 @@ func (service *SongService) UpdateSong(id uint, updateRequest *payload.SongUpdat
 		Date:  updateRequest.Date,
 		Text:  updateRequest.Text,
 		Link:  updateRequest.Link,
-		Hash:  updateRequest.Hash,
 	}
 
 	updatedSong, err := service.Repo.Update(song)
@@ -131,15 +119,12 @@ func (service *SongService) DeleteSong(id uint) error {
 	return nil
 }
 
-func (service *SongService) GetSongByHash(hash string) (*domain.SongModel, error) {
-	log.Printf("Fetching song by hash: %s", hash)
-
-	song, err := service.Repo.GetByHash(hash)
+func (service *SongService) GetSongById(id uint) (*domain.SongModel, error) {
+	song, err := service.Repo.GetById(id)
 	if err != nil {
-		log.Printf("Error fetching song by hash from repository: %v", err)
+		log.Printf("Error fetching song by id from repository: %v", err)
 		return nil, err
 	}
-	log.Printf("Song fetched successfully by hash: %s", hash)
 
 	return song, nil
 }

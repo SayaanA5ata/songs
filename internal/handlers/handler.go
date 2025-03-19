@@ -30,7 +30,7 @@ func NewSongHandler(router *chi.Mux, service *service.SongService) {
 	router.Post("/song", handler.Create())
 	router.Patch("/song/{id}", handler.Update())
 	router.Delete("/song/{id}", handler.Delete())
-	router.Get("/{alias}", handler.GoTo())
+	router.Get("/{id}", handler.GoTo())
 }
 
 // @Summary Получение данных библиотеки с фильтрацией и пагинацией
@@ -248,19 +248,20 @@ func (handler *SongHandler) Delete() http.HandlerFunc {
 
 // @Summary Переход по ссылке песни
 // @Tags songs
-// @Param alias path string true "Хеш песни"
+// @Param id path int true "ID песни"
 // @Success 302 {string} string "Редирект на ссылку песни"
 // @Failure 404 {object} map[string]string "Песня не найдена"
 // @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
-// @Router /{alias} [get]
+// @Router /{id} [get]
 func (handler *SongHandler) GoTo() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Handling GET /{alias} request...")
 
-		alias := r.PathValue("alias")
-		log.Printf("Parsed alias: %s", alias)
-
-		song, err := handler.Service.GetSongByHash(alias)
+		idString := r.PathValue("id")
+		id, err := strconv.ParseUint(idString, 10, 32)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+		}
+		song, err := handler.Service.GetSongById(uint(id))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return

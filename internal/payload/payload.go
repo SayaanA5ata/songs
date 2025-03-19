@@ -8,7 +8,6 @@ type SongCreateRequest struct {
 	Date  string `json:"releaseDate" validate:"required"`
 	Text  string `json:"text" validate:"required"`
 	Link  string `json:"link" validate:"required,http_url"`
-	Hash  string `json:"hash" gorm:"uniqueIndex"`
 }
 
 // SongUpdateRequest представляет данные для обновления песни.
@@ -19,7 +18,6 @@ type SongUpdateRequest struct {
 	Date  string `json:"releaseDate"`
 	Text  string `json:"text"`
 	Link  string `json:"link"`
-	Hash  string `json:"hash"`
 }
 
 type SongResponse struct {
@@ -29,7 +27,6 @@ type SongResponse struct {
 	Date  string `json:"releaseDate"`
 	Text  string `json:"text"`
 	Link  string `json:"link"`
-	Hash  string `json:"hash"`
 }
 
 // VerseResponse представляет один куплет песни.

@@ -32,8 +32,12 @@ func (s *Server) Run() {
 	dbase := db.NewDb(s.Config)
 	if dbase == nil {
 		log.Fatal("Failed to initialize database")
+		return
 	}
 	log.Println("Database connection initialized successfully.")
+
+	// Выполнение миграции структуры если таблица отсутствует и заполнение тестовыми данными если таблица пустая..
+	MigrateIfNotExists(*dbase)
 
 	// Создаем Chi-роутер
 	log.Println("Setting up Chi router...")
